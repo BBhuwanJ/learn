@@ -391,7 +391,7 @@ export default function Home() {
             href="/day/1"
             className="inline-block px-10 py-5 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-bold text-xl transition-all transform hover:scale-105 shadow-2xl"
           >
-            Begin Day 1 - It&apos;s Free! 🎉
+            Begin Day 1 🎉
           </Link>
         </div>
       </section>
