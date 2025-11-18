@@ -25,15 +25,33 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js" defer></script>
+        <script src="https://sql.js.org/dist/sql-wasm.js" defer></script>
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              try {
-                const theme = localStorage.getItem('theme') || 'dark';
-                if (theme === 'dark') {
-                  document.documentElement.classList.add('dark');
-                }
-              } catch (e) {}
+              (function() {
+                try {
+                  const theme = localStorage.getItem('theme') || 'dark';
+                  const root = document.documentElement;
+                  if (theme === 'dark') {
+                    root.classList.add('dark');
+                  } else {
+                    root.classList.remove('dark');
+                  }
+                  
+                  // Listen for storage changes across tabs
+                  window.addEventListener('storage', function(e) {
+                    if (e.key === 'theme') {
+                      if (e.newValue === 'dark') {
+                        root.classList.add('dark');
+                      } else {
+                        root.classList.remove('dark');
+                      }
+                    }
+                  });
+                } catch (e) {}
+              })();
             `,
           }}
         />

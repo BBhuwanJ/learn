@@ -1,0 +1,4 @@
+TODO:
+- [x] Update app/page.tsx backgrounds for proper light mode white base and complementary dark mode colors.
+- [x] Adjust section backgrounds in app/page.tsx to respect theme by adding dark variants or conditional classes.
+- [x] Ensure day pages have neutral light backgrounds and appropriate dark mode overrides in app/day/[id]/page.tsx.

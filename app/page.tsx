@@ -27,21 +27,43 @@ export default function Home() {
     } else {
       document.documentElement.classList.remove('dark');
     }
+
+    // Listen for theme changes from other pages/tabs
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'theme' && e.newValue) {
+        const newTheme = e.newValue as 'light' | 'dark';
+        setTheme(newTheme);
+        if (newTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
-    console.log('Switching theme from', theme, 'to', newTheme);
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
+
+    // Update DOM immediately
+    const root = document.documentElement;
     if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      console.log('Added dark class to html element');
+      root.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('dark');
-      console.log('Removed dark class from html element');
+      root.classList.remove('dark');
     }
-    console.log('HTML classList:', document.documentElement.classList.toString());
+
+    // Trigger storage event for other tabs
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'theme',
+      newValue: newTheme,
+      oldValue: theme,
+    }));
   };
 
   const days: DayDetail[] = [
@@ -186,7 +208,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 dark:from-[#0d1117] dark:via-[#121a24] dark:to-[#141e28]">
+    <div className="min-h-screen bg-white dark:bg-[#0d1117]">
       {/* Theme Toggle Button */}
       <div className="fixed top-6 right-6 z-50">
         <button
@@ -235,7 +257,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="px-6 py-16 bg-white/60 dark:bg-[#1c2732]/50 backdrop-blur">
+      <section className="px-6 py-16 bg-white dark:bg-[#1c2732]/50 backdrop-blur">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-8">
           {[
             { number: "10", label: "Days" },
@@ -256,7 +278,7 @@ export default function Home() {
       </section>
 
       {/* Curriculum Section */}
-      <section className="px-6 py-20">
+      <section className="px-6 py-20 bg-white dark:bg-transparent">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-900 dark:text-white">
             Your Learning Journey
@@ -330,9 +352,9 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="px-6 py-20 bg-linear-to-r from-blue-600 to-purple-600 text-white">
+      <section className="px-6 py-20 bg-white dark:bg-linear-to-r dark:from-blue-600 dark:to-purple-600 text-gray-900 dark:text-white">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-gray-900 dark:text-white">
             Why This Course?
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -368,10 +390,10 @@ export default function Home() {
                 desc: "Learn at your own speed with lifetime access to all materials and updates",
               },
             ].map((feature, i) => (
-              <div key={i} className="text-center">
+              <div key={i} className="text-center bg-white dark:bg-transparent rounded-xl p-6 shadow-sm dark:shadow-none border border-gray-100 dark:border-white/10">
                 <div className="text-5xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-blue-100">{feature.desc}</p>
+                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">{feature.title}</h3>
+                <p className="text-gray-600 dark:text-blue-100">{feature.desc}</p>
               </div>
             ))}
           </div>
@@ -379,7 +401,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="px-6 py-20">
+      <section className="px-6 py-20 bg-white dark:bg-transparent">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white">
             Ready to Start Your Journey?
@@ -397,8 +419,8 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="px-6 py-12 bg-gray-900 text-gray-400 text-center">
-        <p>© 2025 Python Backend Learning Path. Built for aspiring backend developers.</p>
+      <footer className="px-6 py-12 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 text-center border-t border-gray-100 dark:border-gray-700">
+        <p className="text-sm">© 2025 Python Backend Learning Path. Built for aspiring backend developers.</p>
       </footer>
     </div>
   );
